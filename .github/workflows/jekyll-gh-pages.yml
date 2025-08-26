@@ -28,6 +28,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Generate file tree
+        shell: python
+        run: |
+            import os
+            from urllib.parse import quote
+            
+            for root, _, files in os.walk(directory):
+                for file in files:
+                    full_path = os.path.join(root, file)
+                    relative_path = os.path.relpath(full_path, directory)
+                    encoded_path = quote(relative_path.replace(os.sep, '/'))  # Normalize slashes for web
+                    print(f"- [{relative_path}]({encoded_path})")
+            
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Build with Jekyll
