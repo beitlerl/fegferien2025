@@ -34,12 +34,18 @@ jobs:
             from pathlib import Path
             from urllib.parse import quote
             dir = Path(".")
+            file_list = []
             for file_path in dir.rglob("*.pdf"):
                 if file_path.is_file():
                     relative_path = file_path.relative_to(dir)
                     display_text = str(relative_path)
                     encoded_path = quote(relative_path.as_posix())
-                    print(f"- [{display_text}]({encoded_path})")
+                    file_list.append(f"- [{display_text}]({encoded_path})")
+
+            with open("README.md", "a", encoding="utf-8") as readme:
+                readme.write("\n")
+                readme.write("\n".join(file_list))
+                readme.write("\n")
             
       - name: Setup Pages
         uses: actions/configure-pages@v5
