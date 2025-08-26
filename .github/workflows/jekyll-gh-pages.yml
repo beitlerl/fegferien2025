@@ -31,15 +31,14 @@ jobs:
       - name: Generate file tree
         shell: python
         run: |
-            import os
+            from pathlib import Path
             from urllib.parse import quote
-            
-            for root, _, files in os.walk(directory):
-                for file in files:
-                    full_path = os.path.join(root, file)
-                    relative_path = os.path.relpath(full_path, directory)
-                    encoded_path = quote(relative_path.replace(os.sep, '/'))  # Normalize slashes for web
-                    print(f"- [{relative_path}]({encoded_path})")
+            for file_path in Path(".").rglob("*.pdf"):
+                if file_path.is_file():
+                    relative_path = file_path.relative_to(directory)
+                    display_text = str(relative_path)
+                    encoded_path = quote(relative_path.as_posix())
+                    print(f"- [{display_text}]({encoded_path})")
             
       - name: Setup Pages
         uses: actions/configure-pages@v5
